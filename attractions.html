@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Pekan</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #1976D2;
+            --background-color: #f5f6fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .explore-header {
+            font-size: 3.5rem;
+            color: #1e4c87;
+            margin: 40px 20px 20px;
+            font-weight: bold;
+            position: relative;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 24px rgba(33,150,243,0.12), 2px 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .explore-header::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            width: 50px;
+            height: 50px;
+            background-image: radial-gradient(circle, #ffd700 3px, transparent 3px);
+            background-size: 15px 15px;
+            background-repeat: space;
+        }
+
+        .sort-container {
+            display: flex;
+            gap: 10px;
+            margin: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sort-button {
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            background: white;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sort-button.active, .sort-button:hover {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 16px rgba(33,150,243,0.12);
+            transform: translateY(-2px) scale(1.04);
+        }
+
+        .sort-button:active::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 120%;
+            height: 120%;
+            background: rgba(33,150,243,0.12);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.5s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .attractions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 280px)); /* reduced width */
+            gap: 25px;
+            padding: 20px;
+            justify-content: center; /* center the grid */
+        }
+
+        .attraction-card {
+            background: linear-gradient(135deg, #f5fafd 60%, #e3f2fd 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            max-width: 280px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .attraction-card.hidden {
+            display: none;
+        }
+
+        .attraction-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(33,150,243,0.12);
+        }
+
+        .attraction-image {
+            width: 100%;
+            height: 180px; /* slightly shorter */
+            object-fit: cover;
+        }
+
+        .attraction-info {
+            padding: 15px;
+        }
+
+        .attraction-info h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .location i {
+            margin-right: 5px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .rating {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .rating i {
+            color: #FFD700;
+            font-size: 0.9rem;
+        }
+
+        .details {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .hours {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .hours i {
+            color: var(--primary-color);
+            margin-right: 5px;
+            font-size: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: var(--primary-color);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            margin-top: 8px;
+            font-weight: 500;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .tag[data-type="historical"] { background: #f6e7b4; color: #7c6a2d; }
+        .tag[data-type="cultural"] { background: #d0e7f9; color: #2d4a6a; }
+        .tag[data-type="nature"] { background: #d6f5e3; color: #3a5c4a; }
+        .tag[data-type="religious"] { background: #f7d6e0; color: #7a4a5a; }
+        .tag[data-type="recreation"] { background: #e6e6fa; color: #5a4a7a; }
+        .tag[data-type="family"] { background: #f9e6d6; color: #7a5a3a; }
+        .tag[data-type="scenic"] { background: #d6f0fa; color: #3a5a6c; }
+        .tag[data-type="relaxation"] { background: #ffe7d6; color: #7a5a3a; }
+        .tag[data-type="museum"] { background: #e6f7f0; color: #3a7a5a; }
+        .tag[data-type="architecture"] { background: #f0e6fa; color: #5a3a7a; }
+
+        .map-section {
+            margin: 40px 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 400px;
+            background: #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .facilities {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .facility-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        .sidebar {
+            width: 100%;
+            background: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo h2 {
+            color: var(--primary-color);
+            margin-bottom: 0;
+            padding: 5px 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+        }
+
+        .nav-links li {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            margin: 0 3px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links li:hover, .nav-links li.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-links li i {
+            margin-right: 10px;
+        }
+
+        .attraction-card .view-details {
+            display: none;
+            position: absolute;
+            bottom: 18px;
+            right: 18px;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.12);
+            transition: background 0.3s, box-shadow 0.3s;
+            z-index: 2;
+        }
+
+        .attraction-card:hover .view-details {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .attraction-card .view-details:active::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 120%;
+            height: 120%;
+            background: rgba(33,150,243,0.12);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.5s linear;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>JomPekan</h2>
+        </div>
+        <ul class="nav-links">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                <li>
+                    <i class="material-icons">home</i>
+                    <span>Home</span>
+                </li>
+            </a>
+
+            <a href="attractions.html" style="text-decoration: none; color: inherit;">
+                <li class="active">
+                    <i class="material-icons">place</i>
+                    <span>View Attractions</span>
+                </li>
+            </a>
+
+            <a href="gallery.html" style="text-decoration: none; color: inherit;">
+                <li>
+                    <i class="material-icons">photo_library</i>
+                    <span>Gallery</span>
+                </li>
+            </a>
+
+            <a href="wallet.html" style="text-decoration: none; color: inherit;">
+                <li>
+                    <i class="material-icons">account_balance_wallet</i>
+                    <span>Wallet</span>
+                </li>
+            </a>
+
+            <a href="planner.html" style="text-decoration: none; color: inherit;">
+                <li>
+                    <i class="material-icons">event</i>
+                    <span>Planner</span>
+                </li>
+            </a>
+
+            <a href="login.html" style="text-decoration: none; color: inherit;">
+                <li>
+                    <i class="material-icons">login</i>
+                    <span>Log In</span>
+                </li>
+            </a>
+        </ul>
+    </nav>
+
+    <h1 class="explore-header">Destinations</h1>
+    
+    <div class="sort-container">
+        <button class="sort-button active" data-category="all"><i class="material-icons">apps</i> All</button>
+        <button class="sort-button" data-category="historical"><i class="material-icons">history</i> Historical</button>
+        <button class="sort-button" data-category="cultural"><i class="material-icons">museum</i> Cultural</button>
+        <button class="sort-button" data-category="nature"><i class="material-icons">park</i> Nature</button>
+        <button class="sort-button" data-category="religious"><i class="material-icons">mosque</i> Religious</button>
+    </div>
+
+    <div class="attractions-grid">
+        <a href="attraction-details.html" class="attraction-card" data-categories="historical,cultural">
+            <div class="rating">
+                <i class="material-icons">star</i>
+                4.8
+            </div>
+            <img src="src/sultanabubakr.jpeg" alt="Sultan Abu Bakar Museum" class="attraction-image">
+            <div class="attraction-info">
+                <h3>Sultan Abu Bakar Museum</h3>
+                <div class="location">
+                    <i class="material-icons">place</i>
+                    <span>Pekan, Pahang</span>
+                </div>
+                <div class="details">
+                    <div class="hours">
+                        <i class="material-icons">schedule</i>
+                        <span>9:00 AM - 5:00 PM</span>
+                    </div>
+                    <p>Historical royal museum showcasing Pahang's heritage</p>
+                    <div>
+                        <span class="tag" data-type="historical">Historical</span>
+                        <span class="tag" data-type="museum">Museum</span>
+                        <span class="tag" data-type="cultural">Culture</span>
+                    </div>
+                    <div class="facilities">
+                        <img src="src/wifi.png" alt="WiFi" class="facility-icon">
+                        <img src="src/wheelchair.png" alt="Wheelchair Access" class="facility-icon">
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="sultan-ahmad-mosque-details.html" class="attraction-card" data-categories="religious,cultural">
+            <div class="rating">
+                <i class="material-icons">star</i>
+                4.5
+            </div>
+            <img src="src/sultanahmad.jpg" alt="Sultan Ahmad Shah Mosque" class="attraction-image">
+            <div class="attraction-info">
+                <h3>Sultan Ahmad Shah Mosque</h3>
+                <div class="location">
+                    <i class="material-icons">place</i>
+                    <span>Pekan, Pahang</span>
+                </div>
+                <div class="details">
+                    <div class="hours">
+                        <i class="material-icons">schedule</i>
+                        <span>6:00 AM - 9:00 PM</span>
+                    </div>
+                    <p>Iconic mosque with stunning architecture and serene ambiance</p>
+                    <div>
+                        <span class="tag" data-type="religious">Religious</span>
+                        <span class="tag" data-type="architecture">Architecture</span>
+                        <span class="tag" data-type="cultural">Culture</span>
+                    </div>
+                    <div class="facilities">
+                        <img src="src/bus.png" alt="Public Transport" class="facility-icon">
+                        <img src="src/wheelchair.png" alt="Wheelchair Access" class="facility-icon">
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="pekan-waterfront-details.html" class="attraction-card" data-categories="nature">
+            <div class="rating">
+                <i class="material-icons">star</i>
+                4.7
+            </div>
+            <img src="src/pekan-waterfront.jpg" alt="Pekan Waterfront" class="attraction-image">
+            <div class="attraction-info">
+                <h3>Pekan Waterfront</h3>
+                <div class="location">
+                    <i class="material-icons">place</i>
+                    <span>Pekan, Pahang</span>
+                </div>
+                <div class="details">
+                    <div class="hours">
+                        <i class="material-icons">schedule</i>
+                        <span>Open 24 hours</span>
+                    </div>
+                    <p>Scenic riverside area perfect for relaxation and leisure</p>
+                    <div>
+                        <span class="tag" data-type="nature">Nature</span>
+                        <span class="tag" data-type="relaxation">Relaxation</span>
+                        <span class="tag" data-type="scenic">Scenic</span>
+                    </div>
+                    <div class="facilities">
+                        <img src="src/wifi.png" alt="WiFi" class="facility-icon">
+                        <img src="src/bus.png" alt="Public Transport" class="facility-icon">
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="taman-tasik-details.html" class="attraction-card" data-categories="nature">
+            <div class="rating">
+                <i class="material-icons">star</i>
+                4.6
+            </div>
+            <img src="src/tamantasikabubakar.jpg" alt="Taman Tasik Sultan Abu Bakar" class="attraction-image">
+            <div class="attraction-info">
+                <h3>Taman Tasik Sultan Abu Bakar</h3>
+                <div class="location">
+                    <i class="material-icons">place</i>
+                    <span>Pekan, Pahang</span>
+                </div>
+                <div class="details">
+                    <div class="hours">
+                        <i class="material-icons">schedule</i>
+                        <span>6:00 AM - 7:00 PM</span>
+                    </div>
+                    <p>Beautiful lakeside park perfect for recreation and relaxation</p>
+                    <div>
+                        <span class="tag" data-type="nature">Nature</span>
+                        <span class="tag" data-type="recreation">Recreation</span>
+                        <span class="tag" data-type="family">Family</span>
+                    </div>
+                    <div class="facilities">
+                        <img src="src/bus.png" alt="Public Transport" class="facility-icon">
+                        <img src="src/wifi.png" alt="WiFi" class="facility-icon">
+                        <img src="src/wheelchair.png" alt="Wheelchair Access" class="facility-icon">
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <script>
+        const sortButtons = document.querySelectorAll('.sort-button');
+        const attractions = document.querySelectorAll('.attraction-card');
+
+        sortButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                sortButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                const category = button.dataset.category;
+
+                attractions.forEach(card => {
+                    if (category === 'all') {
+                        card.classList.remove('hidden');
+                    } else {
+                        const categories = card.dataset.categories.split(',');
+                        if (categories.includes(category)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

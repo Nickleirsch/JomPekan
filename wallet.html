@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet - JomPekan</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --primary-color: #2196F3;
+      --secondary-color: #1976D2;
+      --background-color: #f5f6fa;
+      --text-color: #2c3e50;
+      --card-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 100%;
+      background: white;
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo h2 {
+      color: var(--primary-color);
+      margin-bottom: 0;
+      padding: 5px 0;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      margin: 0;
+    }
+
+    .nav-links li {
+      display: flex;
+      align-items: center;
+      padding: 8px 15px;
+      margin: 0 3px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links li:hover,
+    .nav-links li.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .nav-links li i {
+      margin-right: 10px;
+    }
+
+    .main-content {
+      padding: 30px 20px;
+    }
+
+    .wallet-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .wallet-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 24px rgba(33,150,243,0.12), 2px 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .wallet-card {
+      background: linear-gradient(135deg, #b7d8e6 60%, #e6e6fa 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .wallet-card:nth-child(2) {
+      background: linear-gradient(135deg, #f6e7b4 60%, #f7d6e0 100%);
+      color: #3a3a2d;
+    }
+    .wallet-card:nth-child(3) {
+      background: linear-gradient(135deg, #d6f5e3 60%, #e6e6fa 100%);
+      color: #2d4a3a;
+    }
+    .wallet-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(33,150,243,0.12);
+    }
+    .wallet-card:hover .material-icons {
+      transform: scale(1.15) rotate(-8deg);
+      transition: transform 0.3s;
+    }
+    .wallet-card .material-icons {
+      font-size: 60px;
+      opacity: 0.2;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      transition: transform 0.3s;
+    }
+
+    .upload-section {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .drag-drop-area {
+      border: 2px dashed #b7d8e6;
+      border-radius: 12px;
+      padding: 30px 0;
+      background: #f5fafd;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #2196F3;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: border 0.3s, background 0.3s;
+    }
+    .drag-drop-area:hover {
+      border-color: #2196F3;
+      background: #e6e6fa;
+    }
+    .drag-drop-area i {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #b7d8e6;
+    }
+    .progress-bar {
+      width: 80%;
+      height: 8px;
+      background: #e6e6fa;
+      border-radius: 4px;
+      margin: 10px auto 0 auto;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #b7d8e6, #2196F3);
+      border-radius: 4px;
+      transition: width 0.4s;
+    }
+    .upload-section button[type="submit"] {
+      background-color: #2196F3;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: fit-content;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.12);
+      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-section button[type="submit"]:hover {
+      background: #1976D2;
+      box-shadow: 0 4px 16px rgba(33,150,243,0.18);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .upload-section button[type="submit"]:active::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 120%;
+      height: 120%;
+      background: rgba(33,150,243,0.12);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripple 0.5s linear;
+      pointer-events: none;
+    }
+    @keyframes ripple {
+      to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        overflow-x: auto;
+      }
+
+      .nav-links li {
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="logo">
+      <h2>JomPekan</h2>
+    </div>
+    <ul class="nav-links">
+      <a href="index.html" style="text-decoration: none; color: inherit;">
+        <li>
+          <i class="material-icons">home</i>
+          <span>Home</span>
+        </li>
+      </a>
+
+      <a href="attractions.html" style="text-decoration: none; color: inherit;">
+        <li>
+          <i class="material-icons">place</i>
+          <span>View Attractions</span>
+        </li>
+      </a>
+
+      <a href="gallery.html" style="text-decoration: none; color: inherit;">
+        <li>
+          <i class="material-icons">photo_library</i>
+          <span>Gallery</span>
+        </li>
+      </a>
+
+      <a href="wallet.html" style="text-decoration: none; color: inherit;">
+        <li class="active">
+          <i class="material-icons">account_balance_wallet</i>
+          <span>Wallet</span>
+        </li>
+      </a>
+
+      <a href="planner.html" style="text-decoration: none; color: inherit;">
+        <li>
+          <i class="material-icons">event</i>
+          <span>Planner</span>
+        </li>
+      </a>
+
+      <a href="login.html" style="text-decoration: none; color: inherit;">
+        <li>
+          <i class="material-icons">login</i>
+          <span>Log In</span>
+        </li>
+      </a>
+    </ul>
+  </nav>
+  <div class="container">
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="wallet-header">
+        <h1>Your Wallet</h1>
+        <p>Keep your bookings and tickets safe and accessible</p>
+      </div>
+
+      <!-- Wallet Cards -->
+      <div class="wallet-grid">
+        <div class="wallet-card" style="color: #222;">
+          <h3 style="color: #111;">Hotel Booking</h3>
+          <p style="color: #222;">Hotel Seri Pekan<br/>Check-in: 12 May</p>
+          <i class="material-icons">hotel</i>
+        </div>
+        <div class="wallet-card">
+          <h3>Festival Ticket</h3>
+          <p>Pekan Cultural Fest<br/>Entry: 13 May</p>
+          <i class="material-icons">confirmation_number</i>
+        </div>
+        <div class="wallet-card">
+          <h3>Parking Pass</h3>
+          <p>Zone A, Lot 22<br/>Valid: 12–14 May</p>
+          <i class="material-icons">local_parking</i>
+        </div>
+      </div>
+
+      <!-- Upload Section -->
+      <div class="upload-section">
+        <div class="drag-drop-area" onclick="document.getElementById('file-upload').click();">
+          <i class="material-icons">cloud_upload</i>
+          <span>Drag & Drop to Upload or Click to Select File</span>
+        </div>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-bar-inner" id="progressBarInner"></div>
+        </div>
+        <form id="wallet-upload-form" style="background: #f9f9f9; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 20px; width: 100%;">
+          <!-- Custom File Input -->
+          <input id="file-upload" type="file" required style="display: none;">
+          <!-- Type Dropdown -->
+          <label style="font-weight: bold;">Select Type:</label>
+          <select required style="padding: 12px; border-radius: 8px; border: 1px solid #ccc; max-width: 400px;">
+            <option value="" disabled selected>Select Type</option>
+            <option value="ticket">Ticket</option>
+            <option value="hotel">Hotel Booking</option>
+            <option value="receipt">Receipt</option>
+            <option value="pass">Pass</option>
+            <option value="other">Other</option>
+          </select>
+          <!-- Description Input -->
+          <label style="font-weight: bold;">Description:</label>
+          <input type="text" placeholder="Enter Description" required style="padding: 12px; border-radius: 8px; border: 1px solid #ccc; max-width: 600px;">
+          <!-- Submit Button -->
+          <button type="submit">
+            ➕ Upload
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Drag & Drop and Progress Bar (visual only)
+    const dragDrop = document.querySelector('.drag-drop-area');
+    const fileInput = document.getElementById('file-upload');
+    const progressBar = document.getElementById('progressBar');
+    const progressBarInner = document.getElementById('progressBarInner');
+
+    dragDrop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dragDrop.style.background = '#e6e6fa';
+    });
+    dragDrop.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dragDrop.style.background = '#f5fafd';
+    });
+    dragDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dragDrop.style.background = '#f5fafd';
+      fileInput.files = e.dataTransfer.files;
+      showProgressBar();
+    });
+    dragDrop.addEventListener('click', () => {
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', showProgressBar);
+
+    function showProgressBar() {
+      progressBar.style.display = 'block';
+      progressBarInner.style.width = '0%';
+      setTimeout(() => {
+        progressBarInner.style.width = '100%';
+      }, 200);
+      setTimeout(() => {
+        progressBar.style.display = 'none';
+        progressBarInner.style.width = '0%';
+      }, 1200);
+    }
+  </script>
+</body>
+</html>
